@@ -6,25 +6,37 @@ function NoteCard({ note, fetchNotes, setSelectedNote }) {
   const [title, setTitle] = useState(note.title);
   const [description, setDescription] = useState(note.description);
 
+  const API = "https://react-project-backend-ef5l.onrender.com";
+
   const date = new Date(note.createdAt).toLocaleDateString();
 
+  // ✅ DELETE NOTE
   const deleteNote = async () => {
-    await axios.delete(`http://127.0.0.1:3000/api/notes/${note._id}`);
-    fetchNotes();
+    try {
+      await axios.delete(`${API}/api/notes/${note._id}`);
+      fetchNotes();
+    } catch (error) {
+      console.log("Delete error:", error.message);
+    }
   };
 
+  // ✅ UPDATE NOTE
   const updateNote = async () => {
-    await axios.put(`http://127.0.0.1:3000/api/notes/${note._id}`, {
-      title,
-      description,
-    });
-    setIsEditing(false);
-    fetchNotes();
+    try {
+      await axios.put(`${API}/api/notes/${note._id}`, {
+        title,
+        description,
+      });
+
+      setIsEditing(false);
+      fetchNotes();
+    } catch (error) {
+      console.log("Update error:", error.message);
+    }
   };
 
   return (
     <div style={styles.card} onClick={() => setSelectedNote(note)}>
-      
       {isEditing ? (
         <>
           <input
@@ -32,6 +44,7 @@ function NoteCard({ note, fetchNotes, setSelectedNote }) {
             onChange={(e) => setTitle(e.target.value)}
             style={styles.input}
           />
+
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}

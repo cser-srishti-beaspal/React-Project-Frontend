@@ -5,17 +5,24 @@ function AddNote({ fetchNotes }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+  // ✅ LIVE BACKEND URL
+  const API = "https://react-project-backend-ef5l.onrender.com";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post("http://127.0.0.1:3000/api/notes", {
-      title,
-      description
-    });
+    try {
+      await axios.post(`${API}/api/notes`, {
+        title,
+        description,
+      });
 
-    setTitle("");
-    setDescription("");
-    fetchNotes(); // refresh notes
+      setTitle("");
+      setDescription("");
+      fetchNotes(); // refresh notes
+    } catch (error) {
+      console.log("Error adding note:", error.message);
+    }
   };
 
   return (
@@ -48,8 +55,8 @@ const styles = {
     flexDirection: "column",
     width: "300px",
     margin: "20px auto",
-    gap: "10px"
-  }
+    gap: "10px",
+  },
 };
 
 export default AddNote;
