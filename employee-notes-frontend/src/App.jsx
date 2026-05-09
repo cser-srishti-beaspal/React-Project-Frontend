@@ -9,18 +9,23 @@ function App() {
   const [notes, setNotes] = useState([]);
   const [sortOrder, setSortOrder] = useState("newest");
   const [selectedNote, setSelectedNote] = useState(null);
+
+  // ✅ YOUR LIVE BACKEND URL
+  const API = "https://react-project-backend-ef5l.onrender.com";
+
   const fetchNotes = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:3000/api/notes");
+      const res = await axios.get(`${API}/api/notes`);
       setNotes(res.data);
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching notes:", error.message);
     }
   };
 
   useEffect(() => {
     fetchNotes();
   }, []);
+
   const sortedNotes = [...notes].sort((a, b) => {
     if (sortOrder === "newest")
       return new Date(b.createdAt) - new Date(a.createdAt);
@@ -32,9 +37,16 @@ function App() {
   return (
     <div style={styles.container}>
       <h1>Employee Notes Dashboard</h1>
+
       <Navbar sortOrder={sortOrder} setSortOrder={setSortOrder} />
-      <NoteModal note={selectedNote} closeModal={() => setSelectedNote(null)} />
+
+      <NoteModal
+        note={selectedNote}
+        closeModal={() => setSelectedNote(null)}
+      />
+
       <AddNote fetchNotes={fetchNotes} />
+
       <div style={styles.grid}>
         {sortedNotes.map((note) => (
           <NoteCard
@@ -52,13 +64,13 @@ function App() {
 const styles = {
   container: {
     textAlign: "center",
-    padding: "20px"
+    padding: "20px",
   },
   grid: {
     display: "flex",
     flexWrap: "wrap",
-    justifyContent: "center"
-  }
+    justifyContent: "center",
+  },
 };
 
 export default App;
